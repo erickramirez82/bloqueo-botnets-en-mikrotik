@@ -71,3 +71,12 @@ add action=add-src-to-address-list address-list=ddos-attackers address-list-time
 add action=drop chain=prerouting dst-address-list=ddos-targets src-address-list=ddos-attackers place-before=1 comment="bloqueo Ataque DDOS"
 ```
 
+# Trafico de DNS
+
+```
+/ip firewall address-list add list=LAN address=192.168.88.0/24 comment="Red Local"
+/ip firewall filter
+add action=accept chain=input comment="IN - P - TCP Trafico DNS" dst-port=53 protocol=tcp src-address-list=LAN place-before=1 
+add action=accept chain=input comment="IN - P - UDP Trafico DNS" dst-port=53 protocol=udp src-address-list=LAN place-before=1 
+```
+
