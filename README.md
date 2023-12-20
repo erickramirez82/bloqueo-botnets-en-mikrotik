@@ -23,8 +23,8 @@ Tienen protocolos preferidos para el ataque, como Telnet, NTP, SSH; a pesar de l
 ```
 /ip firewall filter
 add action=add-src-to-address-list address-list=drop_telnet address-list-timeout=1w chain=input \
-    comment="List Telnet to WAN" dst-port=23,2323 in-interface-list=WAN protocol=tcp 
-add action=drop chain=input src-address-list=drop_telnet comment="Drop list Telnet to WAN"
+    comment="List Telnet to WAN" dst-port=23,2323 in-interface-list=WAN protocol=tcp  place-before=1
+add action=drop chain=input src-address-list=drop_telnet comment="Drop list Telnet to WAN"  place-before=1
 ```
 
 ## Bloqueo SSH
@@ -32,8 +32,8 @@ add action=drop chain=input src-address-list=drop_telnet comment="Drop list Teln
 ```
 /ip firewall filter
 add action=add-src-to-address-list address-list=drop_ssh address-list-timeout=1w chain=input \
-    comment="List SHH to WAN" dst-port=22 in-interface-list=WAN protocol=tcp
-add action=drop chain=input src-address-list=drop_ssh comment="Drop List SHH to WAN"
+    comment="List SHH to WAN" dst-port=22 in-interface-list=WAN protocol=tcp  place-before=1
+add action=drop chain=input src-address-list=drop_ssh comment="Drop List SHH to WAN"  place-before=1
 ```
 
 
@@ -55,3 +55,19 @@ add action=add-src-to-address-list address-list="port scanners" address-list-tim
     comment="NMAP NULL scan fin los cambias por tcp-flags=!fin" disabled=no protocol=tcp tcp-flags=fin,!syn,!rst,!psh,!ack,!urg place-before=1
 add action=drop chain=input comment="dropping port scanners" disabled=no src-address-list="port scanners" place-before=1
 ```
+
+## Bloqueo y proteccion ataque ddos 
+
+```
+/ip firewall address-list
+add list=ddos-attackers
+add list=ddos-targets
+
+/ip firewall filter
+add action=return chain=detect-ddos dst-limit=32,32,src-and-dst-addresses/10s place-before=1 comment="Ataque DDOS"
+add action=add-dst-to-address-list address-list=ddos-targets address-list-timeout=10m chain=detect-ddos place-before=1 comment=" deteccion Ataque DDOS"
+add action=add-src-to-address-list address-list=ddos-attackers address-list-timeout=10m chain=detect-ddos place-before=1 comment="deteccion Ataque DDOS"
+/ip firewall raw
+add action=drop chain=prerouting dst-address-list=ddos-targets src-address-list=ddos-attackers place-before=1 comment="bloqueo Ataque DDOS"
+```
+
