@@ -42,18 +42,18 @@ add action=drop chain=input src-address-list=drop_ssh comment="Drop List SHH to 
 ```
 /ip firewall filter
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \ 
-    comment="Port scanners to list" disabled=no protocol=tcp psd=21,3s,3,1
+    comment="Port scanners to list" disabled=no protocol=tcp psd=21,3s,3,1 place-before=1
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \ 
-    comment="NMAP FIN Stealth scan" disabled=no protocol=tcp tcp-flags=fin,!syn,!rst,!psh,!ack,!urg
+    comment="NMAP FIN Stealth scan" disabled=no protocol=tcp tcp-flags=fin,!syn,!rst,!psh,!ack,!urg place-before=1
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \
-    comment="SYN/FIN scan" disabled=no protocol=tcp tcp-flags=fin,syn
+    comment="SYN/FIN scan" disabled=no protocol=tcp tcp-flags=fin,syn place-before=1
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \
-    comment="SYN/RST scan" disabled=no protocol=tcp tcp-flags=syn,rst
+    comment="SYN/RST scan" disabled=no protocol=tcp tcp-flags=syn,rst place-before=1
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \
-    comment="FIN/PSH/URG scan" disabled=no protocol=tcp tcp-flags=fin,psh,urg,!syn,!rst,!ack
+    comment="FIN/PSH/URG scan" disabled=no protocol=tcp tcp-flags=fin,psh,urg,!syn,!rst,!ack place-before=1
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \
-    comment="ALL/ALL scan" disabled=no protocol=tcp tcp-flags=fin,syn,rst,psh,ack,urg
+    comment="ALL/ALL scan" disabled=no protocol=tcp tcp-flags=fin,syn,rst,psh,ack,urg place-before=1
 add action=add-src-to-address-list address-list="port scanners" address-list-timeout=2w chain=input \
-    comment="NMAP NULL scan fin los cambias por tcp-flags=!fin" disabled=no protocol=tcp tcp-flags=fin,!syn,!rst,!psh,!ack,!urg
-add action=drop chain=input comment="dropping port scanners" disabled=no src-address-list="port scanners"
+    comment="NMAP NULL scan fin los cambias por tcp-flags=!fin" disabled=no protocol=tcp tcp-flags=fin,!syn,!rst,!psh,!ack,!urg place-before=1
+add action=drop chain=input comment="dropping port scanners" disabled=no src-address-list="port scanners" place-before=1
 ```
