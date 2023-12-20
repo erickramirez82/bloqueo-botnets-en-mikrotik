@@ -56,7 +56,7 @@ add action=add-src-to-address-list address-list="port scanners" address-list-tim
 add action=drop chain=input comment="dropping port scanners" disabled=no src-address-list="port scanners" place-before=1
 ```
 
-## Bloqueo y proteccion ataque ddos 
+## Bloqueo y proteccion ataque DDoS
 
 ```
 /ip firewall address-list
